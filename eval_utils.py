@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from copy import deepcopy
 
 import torch
 import torch.nn as nn
@@ -103,10 +104,10 @@ def eval_split(model, crit, loader, eval_kwargs={}):
 
             with torch.no_grad():
                 # NOTE: Send slots to GPU where appropriate
-                slots = data['slots']
+                slots = deepcopy(data['slots'])
                 for k, v in slots.items():
                     slots[k] = torch.from_numpy(v).cuda() if type(v) is np.ndarray else v
-                loss = crit(model(fc_feats, att_feats, slots, labels, att_masks), labels[:,1:], masks[:,1:]).item()
+                loss = crit(model(fc_feats, att_feats, deepcopy(slots), labels, att_masks), labels[:,1:], masks[:,1:]).item()
             loss_sum = loss_sum + loss
             loss_evals = loss_evals + 1
 
@@ -121,10 +122,10 @@ def eval_split(model, crit, loader, eval_kwargs={}):
         # forward the model to also get generated samples for each image
         with torch.no_grad():
             # NOTE: Handle how slots are loaded if required
-            slots = data['slots']
+            slots = deepcopy(data['slots'])
             # boxes_data = slots['boxes'][np.arange(loader.batch_size) * loader.seq_per_img]
             # slots['boxes'] = boxes_data
-            seq = model(fc_feats, att_feats, slots, att_masks, opt=eval_kwargs, mode='sample')[0].data
+            seq = model(fc_feats, att_feats, deepcopy(slots), att_masks, opt=eval_kwargs, mode='sample')[0].data
 
         # Print beam search
         if beam_size > 1 and verbose_beam:

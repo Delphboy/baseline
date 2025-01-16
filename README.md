@@ -12,7 +12,7 @@ The codebase is designed to be extended to allow custom data to be easily loaded
 
 Clone the repository and its submodules
 ```bash
-git clone --recurse-submodules -j8 git@github.com:Delphboy/baseline.git
+git clone --recurse-submodules git@github.com:Delphboy/baseline.git
 cd baseline
 
 # Create directory for eval
@@ -24,6 +24,8 @@ mkdir vis/
 
 ```bash
 python3 -m venv .venv
+
+source .venv/bin/activate
 
 python3 -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 python3 -m pip install gensim

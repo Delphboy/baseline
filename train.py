@@ -9,6 +9,7 @@ import numpy as np
 import time
 import os
 from six.moves import cPickle
+from copy import deepcopy
 
 import opts
 import models
@@ -141,7 +142,7 @@ def train(opt):
         fc_feats, att_feats, labels, masks, att_masks = tmp
         labels = labels.to(torch.int64)
         slots = None
-        slots = data["slots"]
+        slots = deepcopy(data["slots"])
         for k, v in slots.items():
             slots[k] = torch.from_numpy(v).cuda()
 
